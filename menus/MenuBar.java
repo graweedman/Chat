@@ -5,47 +5,33 @@ import javax.swing.*;
 import java.awt.event.*; 
 
 import java.io.*;  
-import java.util.HashMap;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 
 
-public class MenuBar extends JMenuBar implements ActionListener {
-    JMenu file;
-    JMenuItem open;
-    JTextArea ta;  
-    public MenuBar() {
-        file = new JMenu("file");
-        open = new JMenuItem("Save As");
-        open.addActionListener(this);
-        file.add(open);
-        ta=new JTextArea(800,800); 
-        ta.setBounds(0,20,800,800); 
+public class MenuBar extends JMenuBar {
+    // HashMap<JMenu, ArrayList<JMenuItem>> menus = new HashMap<JMenu, ArrayList<JMenuItem>>();
+    HashMap<String, JMenuItem> menuList = new HashMap<String, JMenuItem>();
+    JMenu file;    
+    JMenuItem open;    
+    public MenuBar(LinkedHashMap<String, String[]> menus, ActionListener listener) {
+
+        Set<Entry<String, String[]>> list = menus.entrySet();
+        Iterator<Entry<String, String[]>> itr = list.iterator();
+
+        while(itr.hasNext()) {
+            Entry<String, String[]> entry = itr.next();
+            JMenu menu = new JMenu(entry.getKey());
+            for (String item : entry.getValue()) {
+                JMenuItem menuItem = new JMenuItem(item);
+                menuItem.addActionListener(listener);
+                menuList.put(item,menuItem);
+                menu.add(menuItem);
+            }
+            add(menu);
+        }
         setBounds(0,0,800,20); 
-        add(file);
-        add(ta);
     }
-
-    public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getSource());
-        // if(e.getSource()==open){    
-        //     JFileChooser fc=new JFileChooser();    
-        //     int i=fc.showOpenDialog(this);    
-        //     if(i==JFileChooser.APPROVE_OPTION){    
-        //         File f=fc.getSelectedFile();    
-        //         String filepath=f.getPath();    
-        //         try{  
-        //         BufferedReader br=new BufferedReader(new FileReader(filepath));    
-        //         String s1="",s2="";                         
-        //         while((s1=br.readLine())!=null){    
-        //         s2+=s1+"\n";    
-        //         }    
-        //         ta.setText(s2);    
-        //         br.close();    
-        //         }catch (Exception ex) {ex.printStackTrace();  }                 
-        //     }    
-        // }    
-    }
-
-    
-
 }
